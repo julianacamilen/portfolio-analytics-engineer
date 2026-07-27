@@ -1,0 +1,24 @@
+# This file is an EXAMPLE. Your real profiles.yml should never go into Git
+# (that's why it lives in ~/.dbt/profiles.yml, outside the repository,
+# instead of inside dbt_project.yml).
+#
+# Copy the target block you want to use into ~/.dbt/profiles.yml
+
+portfolio_analytics_engineer:
+  target: dev
+  outputs:
+
+    # ---- Local use / quick tests ----
+    dev:
+      type: duckdb
+      path: 'portfolio.duckdb'
+      threads: 4
+
+    # ---- Portfolio production: BigQuery sandbox (free, no credit card) ----
+    prod:
+      type: bigquery
+      method: oauth        # authenticates via `gcloud auth application-default login`, no exposed JSON key
+      project: YOUR_PROJECT_ID_HERE
+      dataset: portfolio_analytics_engineer
+      threads: 4
+      location: US

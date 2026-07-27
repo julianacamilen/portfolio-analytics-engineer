@@ -1,0 +1,18 @@
+# dbt
+target/
+dbt_packages/
+logs/
+*.duckdb
+
+# nunca commitar credenciais
+profiles.yml
+.env
+
+# python
+__pycache__/
+*.pyc
+
+# evidence.dev
+evidence/node_modules/
+evidence/.evidence/
+evidence/build/

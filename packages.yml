@@ -1,0 +1,9 @@
+# packages:
+#   - package: dbt-labs/dbt_utils
+#     version: [">=1.0.0", "<2.0.0"]
+#
+# Note: commented out because dbt_utils.accepted_range is not used here --
+# this project ships its own custom generic test instead
+# (macros/generic_tests/test_accepted_range.sql), specifically to
+# demonstrate writing generic tests from scratch rather than relying only
+# on a third-party package. Feel free to uncomment and swap it in.

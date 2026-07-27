@@ -1,0 +1,45 @@
+name: 'portfolio_analytics_engineer'
+version: '1.0.0'
+config-version: 2
+
+# This project is a public Analytics Engineering portfolio.
+# All data is 100% synthetic (see scripts/generate_synthetic_data.py).
+# No table, column, or business rule from any real company is used here.
+
+profile: 'portfolio_analytics_engineer'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Layer convention: staging (1:1 with the source, just cleaning/typing)
+#                    marts    (business logic, aggregations, metrics)
+models:
+  portfolio_analytics_engineer:
+    staging:
+      +materialized: view
+      +schema: staging
+    marts:
+      +materialized: table
+      +schema: marts
+
+seeds:
+  portfolio_analytics_engineer:
+    +schema: raw
+    customers:
+      +column_types:
+        signup_date: date
+    transactions:
+      +column_types:
+        amount: decimal(10,2)
+        created_at: timestamp
+    sessions:
+      +column_types:
+        duration_seconds: integer
+        started_at: timestamp

@@ -1,0 +1,87 @@
+version: 2
+
+# The "sources" below point to the seeds (synthetic data). In a real project,
+# they would point to tables loaded by an ingestion pipeline (Fivetran, Airbyte, etc).
+# Keeping this layer separate is what allows swapping the data source without
+# having to rewrite the business logic (which only lives in the layers downstream).
+
+sources:
+  - name: raw
+    schema: raw
+    tables:
+      - name: customers
+        description: "One record per customer, created at signup time."
+        columns:
+          - name: customer_id
+            description: "Unique customer identifier (PK)."
+            tests:
+              - unique
+              - not_null
+          - name: signup_date
+            description: "Date the customer signed up. Defines the acquisition cohort."
+            tests:
+              - not_null
+          - name: acquisition_channel
+            description: "Channel through which the customer arrived (organic, paid_search, affiliate, social, referral)."
+          - name: country
+            description: "Customer's country (ISO 2-letter code)."
+
+      - name: transactions
+        description: "One record per attempted financial transaction (deposit or withdrawal)."
+        columns:
+          - name: transaction_id
+            description: "Unique transaction identifier (PK)."
+            tests:
+              - unique
+              - not_null
+          - name: customer_id
+            description: "FK to customers."
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('raw', 'customers')
+                    field: customer_id
+          - name: transaction_type
+            description: "deposit or withdrawal."
+            tests:
+              - accepted_values:
+                  arguments:
+                    values: ["deposit", "withdrawal"]
+          - name: status
+            description: "Transaction status."
+            tests:
+              - accepted_values:
+                  arguments:
+                    values: ["successful", "failed", "refunded", "pending", "cancelled"]
+          - name: amount
+            description: "Transaction amount."
+          - name: created_at
+            description: "Timestamp the transaction was created."
+            tests:
+              - not_null
+
+      - name: sessions
+        description: "One record per browsing session (identified or anonymous)."
+        columns:
+          - name: session_id
+            description: "Unique session identifier (PK)."
+            tests:
+              - unique
+              - not_null
+          - name: customer_id
+            description: "FK to customers. Empty when the session belongs to an unidentified visitor."
+          - name: started_at
+            description: "Timestamp the session started."
+            tests:
+              - not_null
+          - name: duration_seconds
+            description: "Total session duration, in seconds."
+          - name: end_reason
+            description: "Reason the session ended: no_activity, timeout or logout."
+            tests:
+              - accepted_values:
+                  arguments:
+                    values: ["no_activity", "timeout", "logout"]
+          - name: device_type
+            description: "desktop, mobile or tablet."

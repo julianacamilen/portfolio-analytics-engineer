@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: fct_sessions_daily
+    description: >
+      One row per day with core site engagement metrics: session volume,
+      average duration, share of short sessions (<5min) and bounce rate.
+      Powers the "Web Engagement Analytics" dashboard.
+    columns:
+      - name: session_date
+        description: "Date (table grain)."
+        tests:
+          - unique
+          - not_null
+      - name: session_count
+        description: "Total sessions started that day."
+        tests:
+          - not_null
+      - name: avg_session_minutes
+        description: "Average session duration, in minutes."
+      - name: pct_sessions_under_5min
+        description: "% of sessions shorter than 5 minutes."
+        tests:
+          - accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+      - name: bounce_rate_pct
+        description: "% of sessions classified as bounce (duration <= 30s)."
+        tests:
+          - accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+
+  - name: fct_sessions_hourly
+    description: >
+      Average sessions per (day of week, hour of day) combination, computed
+      over the whole available period. Used to identify traffic peaks and
+      quiet windows (e.g. "Quietest Traffic Windows").
+    columns:
+      - name: day_of_week
+        description: "0 (Sunday) through 6 (Saturday)."
+        tests:
+          - not_null
+      - name: session_hour
+        description: "Hour of day, 0 to 23."
+        tests:
+          - not_null
+      - name: avg_sessions
+        description: "Average number of sessions observed for that (day of week, hour)."
