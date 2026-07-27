@@ -37,7 +37,6 @@ seeds:
         signup_date: date
     transactions:
       +column_types:
-        amount: decimal(10,2)
         created_at: timestamp
     sessions:
       +column_types:

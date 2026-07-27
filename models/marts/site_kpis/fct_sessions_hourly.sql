@@ -1,6 +1,10 @@
 -- Grain: 1 row per (day of week, hour of day).
 -- Equivalent to "Average Sessions Per Hour" and "Quietest Traffic Windows"
 -- from the original dashboard.
+--
+-- Uses the day_of_week() macro (macros/cross_db/) instead of a raw
+-- EXTRACT(DOW ...) call, since day-of-week syntax and numbering differ
+-- between DuckDB and BigQuery.
 
 with sessions as (
 
@@ -12,9 +16,9 @@ by_day_hour as (
 
     select
         session_date,
-        extract(dow from session_date)  as day_of_week,      -- 0=Sunday .. 6=Saturday
+        {{ day_of_week('session_date') }}  as day_of_week,      -- 0=Sunday .. 6=Saturday
         session_hour,
-        count(*)                        as session_count
+        count(*)                           as session_count
 
     from sessions
     group by 1, 2, 3

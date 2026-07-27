@@ -2,6 +2,12 @@
 -- Equivalent to the "Average session duration", "Session count",
 -- "% of sessions under 5 minutes" and "Bounce rate" cards from the
 -- original dashboard, rebuilt with a generic domain/naming.
+--
+-- Note: conditional aggregates are written as CASE WHEN inside the
+-- aggregate function (e.g. avg(case when ... )) instead of the
+-- FILTER (WHERE ...) syntax. FILTER is supported by DuckDB/Postgres but
+-- not by BigQuery Standard SQL -- CASE WHEN works identically on both,
+-- which keeps this project portable across warehouses.
 
 with sessions as (
 
@@ -18,11 +24,11 @@ daily as (
         round(avg(duration_minutes), 2)                      as avg_session_minutes,
 
         round(
-            avg(duration_minutes) filter (where duration_minutes >= 5), 2
+            avg(case when duration_minutes >= 5 then duration_minutes end), 2
         )                                                    as avg_session_minutes_5min_plus,
 
         round(
-            100.0 * count(*) filter (where duration_minutes < 5) / count(*), 2
+            100.0 * count(case when duration_minutes < 5 then 1 end) / count(*), 2
         )                                                    as pct_sessions_under_5min,
 
         round(
