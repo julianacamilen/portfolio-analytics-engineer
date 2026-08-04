@@ -20,6 +20,7 @@ full context behind the design decisions.
 
 ## Architecture
 
+```
 seeds (synthetic data)
 └── customers.csv, transactions.csv, sessions.csv
 │
@@ -30,18 +31,18 @@ staging (models/staging/)
 ▼
 marts (models/marts/)
 └── business logic, aggregations and metrics -- organized by domain
-
+```
 
 Three synthetic base tables feed **four different marts**, avoiding
 rework and keeping a single, coherent data narrative (instead of 4
 disconnected projects):
 
-| Mart | Status | Base tables used | Answers |
-|---|---|---|---|
-| `site_kpis` | ✅ Done (Week 1) | `sessions` | Site engagement and traffic |
-| `cohort_retention` | 🔜 Week 2 | `customers`, `transactions` | Customer retention by acquisition cohort |
-| `payments_funnel` | 🔜 Week 3 | `transactions` | Payment conversion funnel |
-| `customer_segmentation` | 🔜 Week 4 | `customers`, `transactions` | Customer value segmentation |
+| Mart | Base tables used | Answers |
+|---|---|---|
+| `site_kpis` | `sessions` | Site engagement and traffic |
+| `cohort_retention` | `customers`, `transactions` | Customer retention by acquisition cohort |
+| `payments_funnel` | `transactions` | Payment conversion funnel |
+| `customer_segmentation` | `customers`, `transactions` | Customer value segmentation |
 
 ## Stack
 
@@ -76,6 +77,7 @@ on external packages.
 
 ## Folder structure
 
+```
 .
 ├── models/
 │ ├── staging/ # layer 1: cleaning/typing
@@ -91,3 +93,4 @@ on external packages.
 └── docs/
 ├── case-study.md
 └── setup-bigquery.md
+```
