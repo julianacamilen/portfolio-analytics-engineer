@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: fct_cohort_retention
+    description: >
+      Cohort retention matrix: for each acquisition cohort (customers who
+      signed up in the same calendar month), the number and % of that
+      cohort still active N months later. Powers a "Cohort Retention"
+      dashboard analogous to a typical player/customer value report.
+    columns:
+      - name: cohort_month
+        description: "The acquisition cohort (calendar month of signup)."
+        tests:
+          - not_null
+      - name: months_since_cohort
+        description: "Number of months elapsed since the cohort's signup month (0 = same month)."
+        tests:
+          - not_null
+          - accepted_range:
+              arguments:
+                min_value: 0
+      - name: active_customers
+        description: "Number of customers from this cohort active in that month."
+        tests:
+          - not_null
+      - name: cohort_size
+        description: "Total number of customers in this cohort (constant across all rows of the same cohort_month)."
+        tests:
+          - not_null
+      - name: retention_pct
+        description: "active_customers / cohort_size, as a percentage."
+        tests:
+          - accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100

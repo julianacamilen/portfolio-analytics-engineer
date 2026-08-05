@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: fct_customer_segmentation
+    description: >
+      One row per customer, with their total successful deposit amount
+      and the value segment they're assigned to based on it.
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: total_deposit_amount
+        description: "Sum of all successful deposits made by the customer. 0 if none."
+        tests:
+          - not_null
+      - name: value_segment
+        description: "No Deposit, Bronze, Silver, Gold, or Platinum -- assigned by total_deposit_amount thresholds."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["No Deposit", "Bronze", "Silver", "Gold", "Platinum"]
+
+  - name: fct_segment_summary
+    description: >
+      One row per value segment, with customer count, total and average
+      deposit amount, and % of the customer base in that segment.
+    columns:
+      - name: value_segment
+        tests:
+          - unique
+          - not_null
+      - name: customer_count
+        tests:
+          - not_null
+      - name: pct_of_customers
+        tests:
+          - accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100

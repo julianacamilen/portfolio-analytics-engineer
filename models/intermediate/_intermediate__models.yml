@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: int_customer_cohort_month
+    description: >
+      One row per customer, with their acquisition cohort: the calendar
+      month in which they first signed up.
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: cohort_month
+        description: "First day of the month the customer signed up."
+        tests:
+          - not_null
+
+  - name: int_customer_monthly_activity
+    description: >
+      One row per (customer, month) in which the customer had at least
+      one successful transaction. The grain is intentionally deduplicated
+      to customer x month -- a customer active 10 times in the same
+      month still produces a single row here.
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+      - name: activity_month
+        description: "Calendar month (first day) in which the customer was active."
+        tests:
+          - not_null
+
+  - name: int_customer_deposit_summary
+    description: >
+      One row per customer with at least one successful deposit, with
+      their total deposited amount and deposit count. Used as the value
+      signal for customer segmentation.
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: total_deposit_amount
+        tests:
+          - not_null

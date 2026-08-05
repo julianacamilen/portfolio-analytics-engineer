@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: fct_payments_daily
+    description: >
+      One row per (date, transaction_type), with the full status funnel
+      (attempted -> successful/failed/refunded/pending/cancelled) and the
+      rates derived from it. Powers a "Payments Funnel" dashboard
+      analogous to a typical deposit/withdrawal volume report.
+    columns:
+      - name: created_date
+        description: "Date the transactions occurred (table grain, together with transaction_type)."
+        tests:
+          - not_null
+      - name: transaction_type
+        description: "deposit or withdrawal."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["deposit", "withdrawal"]
+      - name: attempted
+        description: "Total transactions attempted that day, of that type."
+        tests:
+          - not_null
+      - name: success_rate_pct
+        description: "successful / attempted, as a percentage."
+        tests:
+          - accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+      - name: rejection_rate_pct
+        description: "failed / attempted, as a percentage."
+        tests:
+          - accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+      - name: cancellation_rate_pct
+        description: "cancelled / attempted, as a percentage."
+        tests:
+          - accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
