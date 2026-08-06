@@ -2,7 +2,7 @@
 type: bigquery
 name: bigquery
 options:
-  authenticator: gcloud-cli
+  authenticator: service-account
   location: US
 # Advanced Options, you probably don't want to change this
 buildOptions:
