@@ -70,7 +70,7 @@ step-by-step guide.
 
 ## Data quality tests
 
-21 tests covering: `not_null`, `unique`, `accepted_values`,
+51 tests covering: `not_null`, `unique`, `accepted_values`,
 `relationships` (referential integrity), and one **custom generic test**
 (`accepted_range`, in `macros/generic_tests/`) written to avoid depending
 on external packages.
